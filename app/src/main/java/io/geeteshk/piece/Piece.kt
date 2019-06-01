@@ -25,7 +25,7 @@ import timber.log.Timber
 class Piece : Application() {
 
     /**
-     * Plant a logging tree when application is created
+     * Plants a logging tree when application is created
      */
     override fun onCreate() {
         super.onCreate()
