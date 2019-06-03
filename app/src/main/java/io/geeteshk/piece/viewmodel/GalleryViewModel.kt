@@ -21,17 +21,18 @@ import android.os.Environment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.geeteshk.piece.model.GalleryImage
 import java.io.File
 
 class GalleryViewModel : ViewModel() {
 
-    private val images: MutableLiveData<List<File>> by lazy {
-        MutableLiveData<List<File>>().also {
+    private val images: MutableLiveData<List<GalleryImage>> by lazy {
+        MutableLiveData<List<GalleryImage>>().also {
             loadImages()
         }
     }
 
-    fun getImages(): LiveData<List<File>> {
+    fun getImages(): LiveData<List<GalleryImage>> {
         return images
     }
 
@@ -40,14 +41,14 @@ class GalleryViewModel : ViewModel() {
      */
     private fun loadImages() {
         val storageRoot = Environment.getExternalStorageDirectory()
-        val imageFiles = ArrayList<File>()
+        val imageFiles = ArrayList<GalleryImage>()
 
         // Do a recursive search for images
         findImages(storageRoot, imageFiles)
 
         // Sort image files by last modified property
         imageFiles.sortWith(compareByDescending {
-            it.lastModified()
+            it.file.lastModified()
         })
 
         // Post our images to the LiveData to be displayed
@@ -57,13 +58,15 @@ class GalleryViewModel : ViewModel() {
     /**
      * Recursively finds images given a starting directory
      */
-    private fun findImages(currentDir: File, imageFiles: ArrayList<File>) {
+    private fun findImages(currentDir: File, imageFiles: ArrayList<GalleryImage>) {
         val contents = currentDir.listFiles()
         contents.forEach {
             if (it.isDirectory) {
                 findImages(it, imageFiles)
             } else if (it.isImage()) {
-                imageFiles.add(it)
+                imageFiles.add(
+                    GalleryImage(it)
+                )
             }
         }
     }
