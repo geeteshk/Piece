@@ -24,7 +24,7 @@ import io.geeteshk.piece.R
 import io.geeteshk.piece.databinding.ItemGalleryImageBinding
 import io.geeteshk.piece.model.GalleryImage
 
-class GalleryAdapter(private val imageFiles: List<GalleryImage>) : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+class GalleryAdapter(private var imageFiles: List<GalleryImage>) : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
 
     class ViewHolder(val binding: ItemGalleryImageBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -40,5 +40,10 @@ class GalleryAdapter(private val imageFiles: List<GalleryImage>) : RecyclerView.
 
     override fun getItemCount(): Int {
         return imageFiles.size
+    }
+
+    fun setImages(images: List<GalleryImage>) {
+        imageFiles = images
+        notifyDataSetChanged()
     }
 }

@@ -18,10 +18,15 @@ package io.geeteshk.piece.viewmodel
 
 import android.graphics.BitmapFactory
 import android.os.Environment
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
+import io.geeteshk.piece.adapter.GalleryAdapter
 import io.geeteshk.piece.model.GalleryImage
+import io.geeteshk.piece.util.getActivityContext
 import java.io.File
 
 class GalleryViewModel : ViewModel() {
@@ -32,7 +37,7 @@ class GalleryViewModel : ViewModel() {
         }
     }
 
-    fun getImages(): LiveData<List<GalleryImage>> {
+    fun getImageFiles(): LiveData<List<GalleryImage>> {
         return images
     }
 
@@ -83,5 +88,16 @@ class GalleryViewModel : ViewModel() {
 
         // Dimensions will be -1 if file is not an image
         return options.outWidth != -1 && options.outHeight != -1
+    }
+
+    @BindingAdapter("images")
+    fun setImageFiles(view: RecyclerView, galleryImages: LiveData<List<GalleryImage>>) {
+        galleryImages.observe(view.getActivityContext()!!, Observer {
+            if (view.adapter is GalleryAdapter) {
+                (view.adapter as GalleryAdapter).setImages(it)
+            } else {
+                view.adapter = GalleryAdapter(it)
+            }
+        })
     }
 }
