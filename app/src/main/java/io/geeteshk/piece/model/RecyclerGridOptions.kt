@@ -16,16 +16,4 @@
 
 package io.geeteshk.piece.model
 
-import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import io.geeteshk.piece.ui.GridSpacingItemDecoration
-
-data class RecyclerGridOptions(val columns: Int, val padding: Int, val includeEdge: Boolean) {
-
-    @BindingAdapter("gridOptions")
-    fun setupRecyclerGrid(view: RecyclerView, props: RecyclerGridOptions) {
-        view.layoutManager = GridLayoutManager(view.context, props.columns)
-        view.addItemDecoration(GridSpacingItemDecoration(props.columns, props.padding, props.includeEdge))
-    }
-}
+data class RecyclerGridOptions(val columns: Int, val padding: Int, val includeEdge: Boolean)

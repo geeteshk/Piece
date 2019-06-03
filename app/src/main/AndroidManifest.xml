@@ -18,6 +18,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.geeteshk.piece">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:name=".Piece"
         android:fullBackupContent="true"
