@@ -32,8 +32,8 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@null" />
-            <!--app:imageFile="@{image.file}"-->
+            android:contentDescription="@null"
+            app:srcFile="@{image.file}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

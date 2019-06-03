@@ -15,10 +15,9 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <color name="colorImagePlaceholder">#24000000</color>
-</resources>
+    <solid android:color="@color/colorImagePlaceholder" />
+
+</shape>

@@ -16,6 +16,22 @@
 
 package io.geeteshk.piece.model
 
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import io.geeteshk.piece.R
 import java.io.File
 
-data class GalleryImage(val file: File)
+data class GalleryImage(val file: File) {
+
+    @BindingAdapter("srcFile")
+    fun loadImageFile(view: ImageView, imageFile: File) {
+        Glide.with(view.context)
+            .load(imageFile)
+            .centerCrop()
+            .placeholder(R.drawable.image_placeholder)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(view)
+    }
+}
