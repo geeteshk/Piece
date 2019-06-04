@@ -22,6 +22,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.geeteshk.piece.model.GalleryImage
+import timber.log.Timber
 import java.io.File
 
 class GalleryViewModel : ViewModel() {
@@ -40,19 +41,21 @@ class GalleryViewModel : ViewModel() {
      * Asynchronously fetches images in storage
      */
     private fun loadImages() {
-        val storageRoot = Environment.getExternalStorageDirectory()
-        val imageFiles = ArrayList<GalleryImage>()
+        Thread {
+            val storageRoot = Environment.getExternalStorageDirectory()
+            val imageFiles = ArrayList<GalleryImage>()
 
-        // Do a recursive search for images
-        findImages(storageRoot, imageFiles)
+            // Do a recursive search for images
+            findImages(storageRoot, imageFiles)
 
-        // Sort image files by last modified property
-        imageFiles.sortWith(compareByDescending {
-            it.file.lastModified()
-        })
+            // Sort image files by last modified property
+            imageFiles.sortWith(compareByDescending {
+                it.file.lastModified()
+            })
 
-        // Post our images to the LiveData to be displayed
-        images.postValue(imageFiles)
+            // Post our images to the LiveData to be displayed
+            images.postValue(imageFiles)
+        }.start()
     }
 
     /**
@@ -60,7 +63,7 @@ class GalleryViewModel : ViewModel() {
      */
     private fun findImages(currentDir: File, imageFiles: ArrayList<GalleryImage>) {
         val contents = currentDir.listFiles()
-        contents.forEach {
+        contents?.forEach {
             if (it.isDirectory) {
                 findImages(it, imageFiles)
             } else if (it.isImage()) {

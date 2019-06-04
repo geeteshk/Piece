@@ -20,10 +20,6 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="io.geeteshk.piece.viewmodel.GalleryViewModel" />
-
-        <variable
             name="options"
             type="io.geeteshk.piece.model.RecyclerGridOptions" />
     </data>
@@ -36,7 +32,6 @@
             android:id="@+id/imageList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:images="@{viewModel.getImageFiles()}"
             app:gridOptions="@{options}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

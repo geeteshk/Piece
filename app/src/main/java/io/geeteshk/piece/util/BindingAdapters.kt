@@ -18,15 +18,11 @@ package io.geeteshk.piece.util
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import io.geeteshk.piece.R
-import io.geeteshk.piece.adapter.GalleryAdapter
-import io.geeteshk.piece.model.GalleryImage
 import io.geeteshk.piece.model.RecyclerGridOptions
 import io.geeteshk.piece.ui.GridSpacingItemDecoration
 import java.io.File
@@ -45,15 +41,4 @@ fun ImageView.loadImageFile(imageFile: File) {
 fun RecyclerView.setupRecyclerGrid(props: RecyclerGridOptions) {
     layoutManager = GridLayoutManager(context, props.columns)
     addItemDecoration(GridSpacingItemDecoration(props.columns, props.padding, props.includeEdge))
-}
-
-@BindingAdapter("images")
-fun RecyclerView.setImageFiles(galleryImages: LiveData<List<GalleryImage>>) {
-    galleryImages.observe(getActivityContext()!!, Observer {
-        if (adapter is GalleryAdapter) {
-            (adapter as GalleryAdapter).setImages(it)
-        } else {
-            adapter = GalleryAdapter(it)
-        }
-    })
 }
