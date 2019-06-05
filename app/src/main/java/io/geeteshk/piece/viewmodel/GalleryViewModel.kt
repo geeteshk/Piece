@@ -27,13 +27,13 @@ import java.io.File
 
 class GalleryViewModel : ViewModel() {
 
-    private val images: MutableLiveData<List<GalleryImage>> by lazy {
-        MutableLiveData<List<GalleryImage>>().also {
-            loadImages()
-        }
+    private val images = MutableLiveData<List<GalleryImage>>()
+
+    init {
+        loadImages()
     }
 
-    fun getImageFiles(): LiveData<List<GalleryImage>> {
+    fun getImages(): LiveData<List<GalleryImage>> {
         return images
     }
 

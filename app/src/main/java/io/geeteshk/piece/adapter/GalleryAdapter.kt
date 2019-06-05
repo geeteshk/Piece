@@ -17,25 +17,40 @@
 package io.geeteshk.piece.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import io.geeteshk.piece.R
-import io.geeteshk.piece.databinding.ItemGalleryImageBinding
 import io.geeteshk.piece.model.GalleryImage
+import kotlinx.android.synthetic.main.item_gallery_image.view.*
 
-class GalleryAdapter(private var imageFiles: List<GalleryImage>) : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+class GalleryAdapter(private var imageFiles: List<GalleryImage> = ArrayList())
+    : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
 
-    class ViewHolder(val binding: ItemGalleryImageBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind(image: GalleryImage) {
+            Glide.with(view.context)
+                .load(image.file)
+                .centerCrop()
+                .placeholder(R.drawable.image_placeholder)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(view.imageView)
+
+            view.filePath.text = image.file.path
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = DataBindingUtil.inflate<ItemGalleryImageBinding>(layoutInflater, R.layout.item_gallery_image, parent, false)
-        return ViewHolder(binding)
+        val rootView = LayoutInflater.from(parent.context).inflate(
+            R.layout.item_gallery_image, parent, false)
+        return ViewHolder(rootView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.image = imageFiles[position]
+        holder.bind(imageFiles[position])
     }
 
     override fun getItemCount(): Int {
