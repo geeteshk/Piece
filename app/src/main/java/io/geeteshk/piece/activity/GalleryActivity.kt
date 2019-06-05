@@ -17,6 +17,7 @@
 package io.geeteshk.piece.activity
 
 import android.Manifest
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -34,15 +35,18 @@ import io.geeteshk.piece.adapter.GalleryAdapter
 import io.geeteshk.piece.ui.GridSpacingItemDecoration
 import io.geeteshk.piece.viewmodel.GalleryViewModel
 import kotlinx.android.synthetic.main.activity_gallery.*
-import timber.log.Timber
 
 class GalleryActivity : AppCompatActivity(), PermissionListener {
+
+    private lateinit var viewModel: GalleryViewModel
 
     private lateinit var galleryAdapter: GalleryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery)
+
+        viewModel = ViewModelProviders.of(this).get(GalleryViewModel::class.java)
 
         requestPermissions()
     }
@@ -57,7 +61,11 @@ class GalleryActivity : AppCompatActivity(), PermissionListener {
         val gridPadding = 4
         val includeEdge = true
 
-        galleryAdapter = GalleryAdapter()
+        galleryAdapter = GalleryAdapter {
+            val previewIntent = Intent(this, ImagePreviewActivity::class.java)
+            previewIntent.putExtra(ImagePreviewActivity.EXTRA_PREVIEW_FILE, it)
+            startActivity(previewIntent)
+        }
 
         with (imageList) {
             layoutManager = GridLayoutManager(context, numColumns)
@@ -68,7 +76,6 @@ class GalleryActivity : AppCompatActivity(), PermissionListener {
     }
 
     private fun setupImageList() {
-        val viewModel = ViewModelProviders.of(this).get(GalleryViewModel::class.java)
         viewModel.getImages().observe(this, Observer {
             galleryAdapter.setImages(it)
         })

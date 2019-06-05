@@ -25,11 +25,12 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import io.geeteshk.piece.R
 import io.geeteshk.piece.model.GalleryImage
 import kotlinx.android.synthetic.main.item_gallery_image.view.*
+import java.io.File
 
-class GalleryAdapter(private var imageFiles: List<GalleryImage> = ArrayList())
+class GalleryAdapter(private var imageFiles: List<GalleryImage> = ArrayList(), private val listener: (File) -> Unit)
     : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
 
-    class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(image: GalleryImage) {
             Glide.with(view.context)
@@ -39,6 +40,7 @@ class GalleryAdapter(private var imageFiles: List<GalleryImage> = ArrayList())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(view.imageView)
 
+            view.imageView.setOnClickListener { listener.invoke(image.file) }
             view.filePath.text = image.file.path
         }
     }

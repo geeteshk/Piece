@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2019 Geetesh Kalakoti <kalakotig@gmail.com>
   ~
@@ -22,22 +23,22 @@
 
     <application
         android:name=".Piece"
-        android:fullBackupContent="true"
         android:allowBackup="true"
-        android:label="@string/app_name"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".activity.ImagePreviewActivity"></activity>
         <activity android:name=".activity.GalleryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

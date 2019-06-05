@@ -22,7 +22,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.geeteshk.piece.model.GalleryImage
-import timber.log.Timber
 import java.io.File
 
 class GalleryViewModel : ViewModel() {
