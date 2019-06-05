@@ -18,12 +18,17 @@ package io.geeteshk.piece.activity
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -88,11 +93,50 @@ class GalleryActivity : AppCompatActivity(), PermissionListener {
             .check()
     }
 
+    private fun openAppDetails() {
+        startActivityForResult(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:io.geeteshk.piece")),
+            REQUEST_PERMISSION_DETAILS
+        )
+    }
+
     override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-        requestPermissions()
+        if (response?.isPermanentlyDenied == true) {
+            showPermissionSnackbar(galleryLayout,
+                R.string.error_permissions_denied,
+                R.string.action_permissions_denied_permanently) { openAppDetails() }
+        } else {
+            showPermissionSnackbar(galleryLayout,
+                R.string.error_permissions_denied,
+                R.string.action_permissions_denied) { requestPermissions() }
+        }
     }
 
     override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
         token?.continuePermissionRequest()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_PERMISSION_DETAILS -> {
+                requestPermissions()
+            }
+        }
+    }
+
+    private fun showPermissionSnackbar(view: View, @StringRes textRes: Int, @StringRes actionRes: Int, action: () -> Unit) {
+        val snackbar = Snackbar.make(view, textRes, Snackbar.LENGTH_INDEFINITE)
+        snackbar.setAction(actionRes) {
+            action.invoke()
+            snackbar.dismiss()
+        }
+
+        snackbar.show()
+    }
+
+    companion object {
+        const val REQUEST_PERMISSION_DETAILS = 123
     }
 }
