@@ -21,6 +21,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -63,7 +64,10 @@ class GalleryActivity : AppCompatActivity(), PermissionListener {
 
     private fun setupUi() {
         val numColumns = 3
-        val gridPadding = 4
+        val gridPadding = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            4f,
+            resources.displayMetrics).toInt()
         val includeEdge = true
 
         galleryAdapter = GalleryAdapter {
