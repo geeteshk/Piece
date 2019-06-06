@@ -19,7 +19,6 @@ package io.geeteshk.piece.activity
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.TypedValue
@@ -76,13 +75,9 @@ class GalleryActivity : AppCompatActivity(), PermissionListener {
             val previewIntent = Intent(this, ImagePreviewActivity::class.java)
             previewIntent.putExtra(ImagePreviewActivity.EXTRA_PREVIEW_FILE, file)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view,
-                    getString(R.string.activity_gallery_transition_name))
-                startActivity(previewIntent, options.toBundle())
-            } else {
-                startActivity(previewIntent)
-            }
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view,
+                getString(R.string.activity_gallery_transition_name))
+            startActivity(previewIntent, options.toBundle())
         }
 
         with (imageList) {
