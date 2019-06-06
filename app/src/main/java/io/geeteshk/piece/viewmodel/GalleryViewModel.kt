@@ -16,15 +16,16 @@
 
 package io.geeteshk.piece.viewmodel
 
+import android.app.Application
 import android.graphics.BitmapFactory
-import android.os.Environment
+import android.provider.MediaStore
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import io.geeteshk.piece.model.GalleryImage
 import java.io.File
 
-class GalleryViewModel : ViewModel() {
+class GalleryViewModel(private val app: Application) : AndroidViewModel(app) {
 
     private val images = MutableLiveData<List<GalleryImage>>()
 
@@ -41,42 +42,36 @@ class GalleryViewModel : ViewModel() {
      */
     private fun loadImages() {
         Thread {
-            val storageRoot = Environment.getExternalStorageDirectory()
             val imageFiles = ArrayList<GalleryImage>()
+            val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            val projection = arrayOf(MediaStore.Images.ImageColumns.DATA)
+            val cursor = app.contentResolver.query(contentUri, projection, null, null, null)
 
-            // Do a recursive search for images
-            findImages(storageRoot, imageFiles)
+            // Probe for images using a ContentResolver query
+            cursor?.let {
+                // Start from the end and go backwards to show correct order
+                it.moveToLast()
 
-            // Sort image files by last modified property
-            imageFiles.sortWith(compareByDescending {
-                it.file.lastModified()
-            })
+                do {
+                    val file = File(it.getString(0))
+                    if (file.isImage()) {
+                        imageFiles.add(GalleryImage(file))
+                    }
+                } while (it.moveToPrevious())
 
-            // Post our images to the LiveData to be displayed
+                cursor.close()
+            }
+
             images.postValue(imageFiles)
         }.start()
-    }
-
-    /**
-     * Recursively finds images given a starting directory
-     */
-    private fun findImages(currentDir: File, imageFiles: ArrayList<GalleryImage>) {
-        val contents = currentDir.listFiles()
-        contents?.forEach {
-            if (it.isDirectory) {
-                findImages(it, imageFiles)
-            } else if (it.isImage()) {
-                imageFiles.add(
-                    GalleryImage(it)
-                )
-            }
-        }
     }
 
     /**
      * Checks if file is image with BitmapFactory
      */
     private fun File.isImage(): Boolean {
+        if (!exists() || isDirectory) return false
+
         // Setup options to only decode image metadata
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
