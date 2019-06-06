@@ -20,4 +20,6 @@
     <string name="error_permissions_denied">Piece requires specific permissions to work properly.</string>
     <string name="action_permissions_denied">RETRY</string>
     <string name="action_permissions_denied_permanently">SETTINGS</string>
+
+    <string name="activity_gallery_transition_name" translatable="false">activity_gallery_transition_name</string>
 </resources>

@@ -25,6 +25,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/imageList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:transitionName="@string/activity_gallery_transition_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
