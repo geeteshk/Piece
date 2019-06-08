@@ -27,6 +27,7 @@
         android:contentDescription="@null"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="1:1" />
 

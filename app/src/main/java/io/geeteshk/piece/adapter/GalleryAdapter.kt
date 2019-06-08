@@ -41,7 +41,7 @@ class GalleryAdapter(private var imageFiles: List<GalleryImage> = ArrayList(), p
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(view.imageView)
 
-            view.imageView.setOnClickListener { listener.invoke(image.file, view.imageView) }
+            view.setOnClickListener { listener.invoke(image.file, view.imageView) }
         }
     }
 
