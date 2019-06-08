@@ -62,6 +62,8 @@ class ImagePreviewActivity : AppCompatActivity() {
             startActivity(augmentIntent)
             finish()
         }
+
+        imagePreview.setOnClickListener { supportFinishAfterTransition() }
     }
 
     private fun setPreviewImage() {
