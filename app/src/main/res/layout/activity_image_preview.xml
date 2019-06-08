@@ -15,11 +15,12 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="@color/colorPreviewBackground"
     tools:context=".activity.ImagePreviewActivity">
 
     <ImageView
@@ -30,4 +31,14 @@
         android:scaleType="fitCenter"
         android:transitionName="@string/activity_gallery_transition_name" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/augmentImage"
+        style="Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="@string/action_augment_image"
+        app:icon="@drawable/ic_cube_scan" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

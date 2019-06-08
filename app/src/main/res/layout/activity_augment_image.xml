@@ -15,11 +15,10 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AugmentImageActivity">
 
-    <color name="colorImagePlaceholder">#24000000</color>
-    <color name="colorPreviewBackground">#24242B</color>
-</resources>
+</androidx.constraintlayout.widget.ConstraintLayout>
