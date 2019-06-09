@@ -22,4 +22,5 @@
     android:layout_weight="1"
     android:scaleType="fitXY"
     android:adjustViewBounds="true"
-    android:orientation="vertical" />
+    android:orientation="vertical"
+    android:contentDescription="@null" />
