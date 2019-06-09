@@ -60,8 +60,11 @@ class AugmentImageActivity : AppCompatActivity() {
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    view.setImageDrawable(resource)
-                    setupArFragment(view)
+                    runOnUiThread {
+                        view.setImageDrawable(resource)
+                        setupArFragment(view)
+                    }
+
                     return true
                 }
 
@@ -71,11 +74,10 @@ class AugmentImageActivity : AppCompatActivity() {
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    return false
+                    return true
                 }
             })
-            .placeholder(R.drawable.image_placeholder)
-            .into(view)
+            .submit()
     }
 
     private fun setupArFragment(view: ImageView) {
@@ -93,6 +95,8 @@ class AugmentImageActivity : AppCompatActivity() {
             if (!::imageRenderable.isInitialized) {
                 return@setOnTapArPlaneListener
             }
+
+
 
             // Create AR anchor
             val anchor = hitResult.createAnchor()
