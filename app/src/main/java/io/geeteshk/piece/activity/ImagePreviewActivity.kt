@@ -32,9 +32,13 @@ import java.io.File
 
 class ImagePreviewActivity : AppCompatActivity() {
 
+    private lateinit var file: File
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_preview)
+
+        file = intent.getSerializableExtra(EXTRA_PREVIEW_FILE) as File
 
         setupUi()
         setPreviewImage()
@@ -59,6 +63,7 @@ class ImagePreviewActivity : AppCompatActivity() {
 
         augmentImage.setOnClickListener {
             val augmentIntent = Intent(this, AugmentImageActivity::class.java)
+            augmentIntent.putExtra(EXTRA_PREVIEW_FILE, file)
             startActivity(augmentIntent)
             finish()
         }
@@ -69,7 +74,7 @@ class ImagePreviewActivity : AppCompatActivity() {
     private fun setPreviewImage() {
         supportPostponeEnterTransition()
         Glide.with(this)
-            .load(intent.getSerializableExtra(EXTRA_PREVIEW_FILE) as File)
+            .load(file)
             .dontTransform()
             .dontAnimate()
             .listener(object : RequestListener<Drawable> {
