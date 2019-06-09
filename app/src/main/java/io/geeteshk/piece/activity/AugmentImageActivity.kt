@@ -16,14 +16,94 @@
 
 package io.geeteshk.piece.activity
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.google.ar.sceneform.AnchorNode
+import com.google.ar.sceneform.rendering.ViewRenderable
+import com.google.ar.sceneform.ux.ArFragment
+import com.google.ar.sceneform.ux.TransformableNode
 import io.geeteshk.piece.R
+import kotlinx.android.synthetic.main.activity_augment_image.*
+import timber.log.Timber
+import java.io.File
 
 class AugmentImageActivity : AppCompatActivity() {
+
+    private lateinit var arFragment: ArFragment
+    private lateinit var imageRenderable: ViewRenderable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_augment_image)
+
+        supportActionBar?.hide()
+        arFragment = augmentFragment as ArFragment
+
+        val view = View.inflate(this, R.layout.renderable_image_view, null) as ImageView
+        Glide.with(this)
+            .load(intent.getSerializableExtra(ImagePreviewActivity.EXTRA_PREVIEW_FILE) as File)
+            .dontTransform()
+            .dontAnimate()
+            .listener(object : RequestListener<Drawable> {
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    view.setImageDrawable(resource)
+                    setupArFragment(view)
+                    return true
+                }
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+            })
+            .placeholder(R.drawable.image_placeholder)
+            .into(view)
+    }
+
+    private fun setupArFragment(view: ImageView) {
+        ViewRenderable.builder()
+            .setView(this, view)
+            .build()
+            .thenAccept { imageRenderable = it }
+            .exceptionally {
+                Timber.d(it)
+                // TODO: Report the failure
+                null
+            }
+
+        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
+            if (!::imageRenderable.isInitialized) {
+                return@setOnTapArPlaneListener
+            }
+
+            // Create AR anchor
+            val anchor = hitResult.createAnchor()
+            val anchorNode = AnchorNode(anchor)
+            anchorNode.setParent(arFragment.arSceneView.scene)
+
+            // Create the transformable node and add it to the anchor
+            val piece = TransformableNode(arFragment.transformationSystem)
+            piece.setParent(anchorNode)
+            piece.renderable = imageRenderable
+            piece.select()
+        }
     }
 }

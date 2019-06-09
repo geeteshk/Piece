@@ -15,10 +15,15 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.AugmentImageActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <fragment android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:id="@+id/augmentFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>
