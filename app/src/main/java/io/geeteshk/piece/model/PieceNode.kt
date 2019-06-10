@@ -20,6 +20,7 @@ import android.view.View
 import com.google.ar.core.AugmentedImage
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Node
+import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.ViewRenderable
 import timber.log.Timber
@@ -50,15 +51,14 @@ class PieceNode(view: View) : AnchorNode() {
 
         anchor = image.createAnchor(image.centerPose)
 
-        // TODO: Fix rotation
-
         val position = Vector3(image.extentX, 0f, image.extentZ)
-        //val rotation = Quaternion(Vector3(0f, 1f, 0f), 90f)
+        val quat = image.centerPose.extractRotation().rotationQuaternion
+        val rotation = Quaternion(-quat[0], quat[1], quat[2], quat[3])
         val node = Node()
 
         node.setParent(this)
         node.localPosition = position
-        //node.worldRotation = rotation
+        node.localRotation = rotation
         node.renderable = realImage.getNow(null)
     }
 
