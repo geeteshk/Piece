@@ -21,20 +21,21 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.google.ar.sceneform.AnchorNode
-import com.google.ar.sceneform.rendering.ViewRenderable
+import com.google.android.material.snackbar.Snackbar
+import com.google.ar.core.AugmentedImage
+import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.ux.ArFragment
-import com.google.ar.sceneform.ux.TransformableNode
 import io.geeteshk.piece.R
 import io.geeteshk.piece.extension.listen
+import io.geeteshk.piece.model.PieceNode
 import kotlinx.android.synthetic.main.activity_augment_image.*
-import timber.log.Timber
 import java.io.File
 
 class AugmentImageActivity : AppCompatActivity() {
 
     private lateinit var arFragment: ArFragment
-    private lateinit var imageRenderable: ViewRenderable
+
+    private val augmentedImageMap = HashMap<AugmentedImage, PieceNode>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,34 +60,40 @@ class AugmentImageActivity : AppCompatActivity() {
             .submit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (augmentedImageMap.isEmpty()) {
+            fitToScan.visibility = View.VISIBLE
+        }
+    }
+
     private fun setupArFragment(view: ImageView) {
-        ViewRenderable.builder()
-            .setView(this, view)
-            .build()
-            .thenAccept { imageRenderable = it }
-            .exceptionally {
-                Timber.d(it)
-                // TODO: Report the failure
-                null
+        arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
+            val frame = arFragment.arSceneView.arFrame
+            if (frame == null || frame.camera.trackingState != TrackingState.TRACKING) return@addOnUpdateListener
+
+            val updatedImages = frame.getUpdatedTrackables(AugmentedImage::class.java)
+            updatedImages.forEach {
+                when (it.trackingState) {
+                    TrackingState.PAUSED -> {
+                        Snackbar.make(findViewById(android.R.id.content),
+                            "Detected Image " + it.index,
+                            Snackbar.LENGTH_SHORT).show()
+                    }
+
+                    TrackingState.TRACKING -> {
+                        fitToScan.visibility = View.GONE
+                        if (!augmentedImageMap.containsKey(it)) {
+                            val node = PieceNode(view)
+                            node.setImage(it)
+                            augmentedImageMap[it] = node
+                            arFragment.arSceneView.scene.addChild(node)
+                        }
+                    }
+
+                    TrackingState.STOPPED, null -> augmentedImageMap.remove(it)
+                }
             }
-
-        arFragment.setOnTapArPlaneListener { hitResult, plane, motionEvent ->
-            if (!::imageRenderable.isInitialized) {
-                return@setOnTapArPlaneListener
-            }
-
-
-
-            // Create AR anchor
-            val anchor = hitResult.createAnchor()
-            val anchorNode = AnchorNode(anchor)
-            anchorNode.setParent(arFragment.arSceneView.scene)
-
-            // Create the transformable node and add it to the anchor
-            val piece = TransformableNode(arFragment.transformationSystem)
-            piece.setParent(anchorNode)
-            piece.renderable = imageRenderable
-            piece.select()
         }
     }
 }

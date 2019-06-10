@@ -36,7 +36,7 @@ class PieceNode(view: View) : AnchorNode() {
             .build()
     }
 
-    private fun setImage(image: AugmentedImage) {
+    fun setImage(image: AugmentedImage) {
         this.image = image
 
         if (!realImage.isDone) {
@@ -50,10 +50,15 @@ class PieceNode(view: View) : AnchorNode() {
 
         anchor = image.createAnchor(image.centerPose)
 
-        val localPosition = Vector3(image.extentX, 0f, image.extentZ)
+        // TODO: Fix rotation
+
+        val position = Vector3(image.extentX, 0f, image.extentZ)
+        //val rotation = Quaternion(Vector3(0f, 1f, 0f), 90f)
         val node = Node()
+
         node.setParent(this)
-        node.localPosition = localPosition
+        node.localPosition = position
+        //node.worldRotation = rotation
         node.renderable = realImage.getNow(null)
     }
 

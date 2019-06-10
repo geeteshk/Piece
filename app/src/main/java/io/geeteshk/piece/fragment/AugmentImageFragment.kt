@@ -42,7 +42,10 @@ class AugmentImageFragment : ArFragment() {
 
     override fun getSessionConfiguration(session: Session): Config {
         val config = super.getSessionConfiguration(session)
-        if (initAugmentedImageDb(config, session)) {
+
+        config.focusMode = Config.FocusMode.AUTO
+
+        if (!initAugmentedImageDb(config, session)) {
             Snackbar.make(activity?.findViewById(android.R.id.content)!!,
                 "Unable to initialize augmented image database.",
                 Snackbar.LENGTH_LONG).show()
