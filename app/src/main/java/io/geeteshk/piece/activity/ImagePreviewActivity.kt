@@ -17,16 +17,12 @@
 package io.geeteshk.piece.activity
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.transition.Transition
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import io.geeteshk.piece.R
+import io.geeteshk.piece.extension.listen
 import kotlinx.android.synthetic.main.activity_image_preview.*
 import java.io.File
 
@@ -77,27 +73,12 @@ class ImagePreviewActivity : AppCompatActivity() {
             .load(file)
             .dontTransform()
             .dontAnimate()
-            .listener(object : RequestListener<Drawable> {
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    supportStartPostponedEnterTransition()
-                    return false
-                }
-
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    supportStartPostponedEnterTransition()
-                    return false
-                }
+            .listen({
+                supportStartPostponedEnterTransition()
+                false
+            }, {
+                supportStartPostponedEnterTransition()
+                false
             })
             .placeholder(R.drawable.image_placeholder)
             .into(imagePreview)

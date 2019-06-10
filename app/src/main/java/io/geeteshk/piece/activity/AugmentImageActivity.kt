@@ -16,21 +16,17 @@
 
 package io.geeteshk.piece.activity
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.rendering.ViewRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import io.geeteshk.piece.R
+import io.geeteshk.piece.extension.listen
 import kotlinx.android.synthetic.main.activity_augment_image.*
 import timber.log.Timber
 import java.io.File
@@ -52,31 +48,14 @@ class AugmentImageActivity : AppCompatActivity() {
             .load(intent.getSerializableExtra(ImagePreviewActivity.EXTRA_PREVIEW_FILE) as File)
             .dontTransform()
             .dontAnimate()
-            .listener(object : RequestListener<Drawable> {
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    runOnUiThread {
-                        view.setImageDrawable(resource)
-                        setupArFragment(view)
-                    }
-
-                    return true
+            .listen({
+                runOnUiThread {
+                    view.setImageDrawable(it)
+                    setupArFragment(view)
                 }
 
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return true
-                }
-            })
+                true
+            }, { true })
             .submit()
     }
 
